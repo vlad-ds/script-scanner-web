@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Script Intelligence - Script Scanner Pro</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #334155;
+      --accent: #f97316;
+      --light: #f8fafc;
+      --dark: #0f172a;
+      --gray: #64748b;
+      --light-gray: #e2e8f0;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--secondary);
+      background-color: var(--light);
+      padding-top: 60px; /* Added to account for fixed navbar */
+    }
+    
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary-dark);
+    }
+    
+    h2 {
+      font-size: 2rem;
+      margin: 2rem 0 1rem;
+      color: var(--primary-dark);
+    }
+    
+    h3 {
+      font-size: 1.5rem;
+      margin: 1.5rem 0 1rem;
+      color: var(--secondary);
+    }
+    
+    p {
+      margin-bottom: 1rem;
+    }
+    
+    /* Navbar styles */
+    .navbar {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      height: 60px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.25rem;
+      color: var(--primary-dark);
+      text-decoration: none;
+    }
+    
+    .navbar-menu {
+      display: flex;
+      list-style: none;
+    }
+    
+    .navbar-menu li {
+      margin-left: 1.5rem;
+    }
+    
+    .navbar-menu a {
+      color: var(--secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .navbar-menu a:hover {
+      color: var(--primary);
+    }
+    
+    .navbar-menu a.active {
+      color: var(--primary);
+      position: relative;
+    }
+    
+    .navbar-menu a.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -5px;
+      height: 2px;
+      background-color: var(--primary);
+    }
+    
+    .navbar-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--secondary);
+    }
+    
+    .page-header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    
+    .page-header h1 {
+      color: white;
+      margin-bottom: 1rem;
+    }
+    
+    .content-section {
+      padding: 4rem 0;
+      background-color: white;
+    }
+    
+    .content-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+    
+    .content-card {
+      flex: 1;
+      min-width: 300px;
+      background-color: var(--light);
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    .highlight-box {
+      background-color: var(--light);
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .comparison-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+    
+    .comparison-column {
+      width: 100%;
+      padding: 2rem;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .comparison-column h3 {
+      color: var(--dark);
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+    }
+    
+    .comparison-column .tag {
+      margin-bottom: 1rem;
+    }
+    
+    .feature-list {
+      list-style: none;
+      margin: 1.5rem 0;
+    }
+    
+    .feature-list li {
+      margin-bottom: 1rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    
+    .feature-list li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: bold;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .metric-item {
+      background-color: var(--light);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .dashboard-preview {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin: 2rem 0;
+    }
+    
+    .cta-btn {
+      display: inline-block;
+      background-color: var(--accent);
+      color: white;
+      padding: 0.75rem 2rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background-color 0.3s;
+    }
+    
+    .cta-btn:hover {
+      background-color: #e86207;
+    }
+    
+    .code-block {
+      background-color: #f8fafc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      border: 1px solid #e2e8f0;
+      color: #1e293b;
+    }
+
+    .code-block h3, .code-block h4 {
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: #0f172a;
+    }
+
+    .code-block ul, .code-block ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .code-block li {
+      margin-bottom: 0.5rem;
+    }
+
+    .code-block strong, .code-block b {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .code-block p {
+      margin-bottom: 0.75rem;
+    }
+    
+    .tag {
+      display: inline-block;
+      background-color: var(--primary);
+      color: white;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+      .navbar-menu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background-color: white;
+        flex-direction: column;
+        padding: 1rem 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      .navbar-menu.active {
+        display: flex;
+      }
+      
+      .navbar-menu li {
+        margin: 0;
+        padding: 0.75rem 2rem;
+      }
+      
+      .navbar-toggle {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">Script Scanner Pro</a>
+      <button class="navbar-toggle" id="navbar-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <ul class="navbar-menu" id="navbar-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="script_intelligence.html">Script Intelligence</a></li>
+        <li><a href="index.html#demo">Demo</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="container">
+      <h1>Script Intelligence</h1>
+      <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">The next evolution in script analysis powered by our structured data and AI</p>
+    </div>
+  </header>
+
+  <section class="content-section">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <h2>Beyond Basic Script Parsing</h2>
+        
+        <p>Talking with AI can be helpful, but AI models easily get lost when dealing with a complete script. Without proper structure and context, AI struggles to provide precise references and consistent analysis.</p>
+        
+        <p>Our AI-Powered Script Parsing pipeline gives a powerful foundation for AI models to analyze scripts. This allows AIs to combine their reading of the script with data analysis they run on structured data. The result: responses that are <strong>grounded</strong>, <strong>extensive</strong>, and provide <strong>citations</strong> that enhance trust.</p>
+        
+        <div class="highlight-box">
+          <h3>Script Intelligence transforms how AI understands scripts by:</h3>
+          <ul class="feature-list">
+            <li>Creating structured data that AI can efficiently analyze</li>
+            <li>Enabling precise scene and character references</li>
+            <li>Facilitating detailed VFX shot identification and classification</li>
+            <li>Supporting comprehensive script analysis for bidding preparation</li>
+            <li>Providing a foundation for advanced metrics and visualizations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: 4rem 0; background-color: var(--light);">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <h2>The Power of Structured Script Data</h2>
+        
+        <p>Here's a concrete example based on our demo analysis of <a href="index.html#demo" style="color: var(--primary); font-weight: 500;">No Country for Old Men.</a> We asked a question that requires deep script understanding: identifying every scene where two specific characters appear together.</p>
+        
+        <h3>The Challenge:</h3>
+        <p><em>List the exact scenes where Moss and Carla Jean appear together, with precise scene references.</em></p>
+        
+        <div class="comparison-container">
+          <div class="comparison-column" style="border-top: 4px solid #f97316;">
+            <h3 style="color: #f97316; font-size: 1.5rem;">Standard AI with PDF Only</h3>
+            <div class="tag">Basic Results</div>
+            <p>When given only a PDF of the script, the AI:</p>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; list-style: none;">
+              <li style="margin-bottom: 0.75rem; font-size: 1.05rem;"><span style="display: inline-block; width: 28px; margin-right: 4px;">✅</span> <span style="font-weight: 500;">Identified some scene locations correctly</span></li>
+              <li style="margin-bottom: 0.75rem; font-size: 1.05rem;"><span style="display: inline-block; width: 28px; margin-right: 4px;">❌</span> <span style="font-weight: 500;">Could not provide precise scene numbers</span></li>
+              <li style="margin-bottom: 0.75rem; font-size: 1.05rem;"><span style="display: inline-block; width: 28px; margin-right: 4px;">❌</span> <span style="font-weight: 500;">Missed the critical phone call scene</span></li>
+              <li style="margin-bottom: 0.75rem; font-size: 1.05rem;"><span style="display: inline-block; width: 28px; margin-right: 4px;">❌</span> <span style="font-weight: 500;">Provided limited dialogue context</span></li>
+              <li style="margin-bottom: 0.75rem; font-size: 1.05rem;"><span style="display: inline-block; width: 28px; margin-right: 4px;">❌</span> <span style="font-weight: 500;">Offered vague page references</span></li>
+            </ul>
+            <div class="code-block" style="max-height: 400px; overflow-y: auto; border-left: 4px solid #f97316;">
+            <div style="margin-bottom: 10px; font-weight: 600; color: #64748b; font-size: 0.85rem;">AI RESPONSE</div>
+Looking at the provided script of "No Country For Old Men," I'll identify all scenes where Moss and Carla Jean appear together:
+
+<h3>Scenes with Moss and Carla Jean Together:</h3>
+
+<b>1. Moss's Trailer - Night</b> (Early in script)
+   • Moss enters the trailer carrying the document case
+   • Carla Jean asks "What's in the satchel?"
+   • Moss responds "It's full a money"
+
+<b>2. Moss's Trailer Bedroom - Night</b> (Shortly after previous scene)
+   • Moss lies in bed next to Carla Jean
+   • He gets up while she's sleeping
+   • She wakes and asks where he's going
+
+<b>3. Moss's Trailer - Night</b> (After Moss returns from the scene at the river)
+   • Moss tells Carla Jean she needs to go to Odessa
+   • They discuss leaving, with Moss explaining that people will be looking for the money
+
+<b>4. Trailways Bus - Day</b>
+   • Moss and Carla Jean are on the bus
+   • He explains he's going to Del Rio to borrow a car from Eldon
+   • Carla Jean expresses concern: "I got a bad feelin', Llewelyn"
+            </div>
+          </div>
+          
+          <div class="comparison-column" style="border-top: 4px solid #2563eb; margin-top: 3rem;">
+            <h3 style="color: #2563eb; font-size: 1.5rem;">AI with Script Intelligence</h3>
+            <div class="tag" style="background-color: #2563eb;">Enhanced Results</div>
+            <p>When equipped with our structured data, the AI:</p>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; list-style: none;">
+              <li style="margin-bottom: 0.75rem; font-size: 1.05rem;"><span style="display: inline-block; width: 28px; margin-right: 4px;">✅</span> <span style="font-weight: 500;">Provided exact scene numbers and page references</span></li>
+              <li style="margin-bottom: 0.75rem; font-size: 1.05rem;"><span style="display: inline-block; width: 28px; margin-right: 4px;">✅</span> <span style="font-weight: 500;">Identified all scenes including the crucial phone call</span></li>
+              <li style="margin-bottom: 0.75rem; font-size: 1.05rem;"><span style="display: inline-block; width: 28px; margin-right: 4px;">✅</span> <span style="font-weight: 500;">Included rich dialogue examples and context</span></li>
+              <li style="margin-bottom: 0.75rem; font-size: 1.05rem;"><span style="display: inline-block; width: 28px; margin-right: 4px;">✅</span> <span style="font-weight: 500;">Offered insights into character dynamics</span></li>
+              <li style="margin-bottom: 0.75rem; font-size: 1.05rem;"><span style="display: inline-block; width: 28px; margin-right: 4px;">✅</span> <span style="font-weight: 500;">Presented chronologically organized findings</span></li>
+            </ul>
+            <div class="code-block" style="max-height: 400px; overflow-y: auto; border-left: 4px solid #2563eb;">
+            <div style="margin-bottom: 10px; font-weight: 600; color: #64748b; font-size: 0.85rem;">AI RESPONSE</div>
+Based on the script analysis, here are all the scenes where Moss and Carla Jean appear together:
+
+<h3>INT. TRAILER - NIGHT (Scene 18, Page 11-12)</h3>
+This is the first scene where Moss and Carla Jean appear together. Moss returns to their trailer with the document case full of money and a pistol.
+
+<h3>INT. TRAILER KITCHEN - NIGHT (Scene 20, Page 13)</h3>
+In this scene, Moss wakes up in the middle of the night and decides to go back to the scene of the drug deal. Carla Jean catches him as he's filling a water jug.
+
+<h3>INT. MOSS' TRAILER - LATER (Scene 29, Page 24-25)</h3>
+After Moss returns from being chased and injured at the river, he tells Carla Jean they need to leave.
+
+<h3>INT. TRAILWAYS BUS - DAY (Scene 39, Page 34-35)</h3>
+This scene shows Moss and Carla Jean as they're separating. They're on a bus, and Moss is explaining his plans.
+
+<h3>INT. GREYHOUND STATION - DEL RIO - DAY (Scene 124, Page 92-93)</h3>
+This is their final interaction, which takes place over the phone. Moss calls Carla Jean from a bus station.
+            </div>
+          </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 3rem; padding: 2rem; background-color: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+          <h3 style="color: var(--primary-dark); margin-bottom: 1rem;">The Power of Structured Data</h3>
+          <p style="font-weight: 600; font-size: 1.1rem; margin-bottom: 1rem; color: #334155;">Script Intelligence enables AI to provide comprehensive, accurate analysis with precise references.</p>
+          <p>Both examples used the same base AI model with nearly identical prompts — the only difference was access to our structured script data.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <h2>VFX Bidding Analytics Dashboard</h2>
+        
+        <p>Beyond enhancing AI responses, Script Intelligence enables powerful data analysis capabilities. We've built an experimental dashboard specifically designed for VFX bidding work using "No Country for Old Men" as an example.</p>
+        
+        <div style="text-align: center; margin: 2rem 0;">
+          <img src="img/dashboard-preview.jpg" alt="VFX Analytics Dashboard Preview" class="dashboard-preview" style="width: 100%; max-width: 700px;">
+          <p style="font-size: 0.9rem; margin-top: 1.5rem;"><a href="https://claude.site/artifacts/45aa84ba-ddc6-4ed2-a61e-8ccd25a64bca" target="_blank" class="cta-btn" style="background-color: var(--primary); padding: 0.75rem 2rem; font-size: 1.1rem; margin-top: 0;">View Interactive Dashboard</a></p>
+        </div>
+        
+        <h3>Key Metrics Visualized</h3>
+        
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <h4 style="color: var(--primary-dark); margin-bottom: 0.5rem;">VFX Scene Distribution</h4>
+            <p>66 VFX scenes identified (42% of all scenes), with breakdown by interior/exterior, day/night, and weather effects</p>
+          </div>
+          
+          <div class="metric-item">
+            <h4 style="color: var(--primary-dark); margin-bottom: 0.5rem;">Element Frequency Analysis</h4>
+            <p>Detailed counts of VFX elements like gun/weapon effects (68), blood (29), fire (15), and other elements</p>
+          </div>
+          
+          <div class="metric-item">
+            <h4 style="color: var(--primary-dark); margin-bottom: 0.5rem;">Complexity Heat Map</h4>
+            <p>Page-by-page visualization of action intensity, highlighting VFX-heavy moments (pages 61-64, 16-17, 91)</p>
+          </div>
+          
+          <div class="metric-item">
+            <h4 style="color: var(--primary-dark); margin-bottom: 0.5rem;">Location Continuity</h4>
+            <p>Identification of recurring locations requiring consistent VFX treatment across multiple scenes</p>
+          </div>
+          
+          <div class="metric-item">
+            <h4 style="color: var(--primary-dark); margin-bottom: 0.5rem;">Sequence Complexity Table</h4>
+            <p>Detailed analysis of the most complex VFX scenes with information on length, character count, and action lines</p>
+          </div>
+          
+          <div class="metric-item">
+            <h4 style="color: var(--primary-dark); margin-bottom: 0.5rem;">Budget Forecasting</h4>
+            <p>Breakdown of high-impact elements, complex sequences, and resource planning needs for accurate bidding</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: 3rem 0; background-color: var(--light); text-align: center;">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">While Script Intelligence is still in experimental alpha, we're excited about its potential to revolutionize how VFX companies analyze scripts and prepare bids.</p>
+        
+        <a href="contact.html" class="cta-btn">Request Early Access</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 Script Scanner Pro. All rights reserved.</p>
+      <div style="margin-top: 1rem;">
+        <a href="index.html" style="color: white; margin: 0 0.5rem; text-decoration: none;">Home</a> | 
+        <a href="about.html" style="color: white; margin: 0 0.5rem; text-decoration: none;">About</a> | 
+        <a href="script_intelligence.html" style="color: white; margin: 0 0.5rem; text-decoration: none;">Script Intelligence</a> | 
+        <a href="index.html#demo" style="color: white; margin: 0 0.5rem; text-decoration: none;">Demo</a> | 
+        <a href="index.html#pricing" style="color: white; margin: 0 0.5rem; text-decoration: none;">Pricing</a> | 
+        <a href="contact.html" style="color: white; margin: 0 0.5rem; text-decoration: none;">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar toggle functionality for mobile
+    document.getElementById('navbar-toggle').addEventListener('click', function() {
+      document.getElementById('navbar-menu').classList.toggle('active');
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const navbar = document.querySelector('.navbar');
+      const navbarMenu = document.getElementById('navbar-menu');
+      const navbarToggle = document.getElementById('navbar-toggle');
+      
+      if (!navbar.contains(event.target) && navbarMenu.classList.contains('active')) {
+        navbarMenu.classList.remove('active');
+      }
+    });
+    
+    // Active link highlighting
+    const currentPage = window.location.pathname.split('/').pop();
+    const navLinks = document.querySelectorAll('.navbar-menu a');
+    
+    navLinks.forEach(link => {
+      const linkHref = link.getAttribute('href');
+      
+      // Check for exact page match
+      if (linkHref === currentPage || (currentPage === '' && linkHref === 'index.html')) {
+        link.classList.add('active');
+      } 
+      // Check for hash links on the home page
+      else if (currentPage === 'index.html' || currentPage === '') {
+        if (linkHref.startsWith('index.html#')) {
+          link.classList.remove('active');
+        }
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html> 
